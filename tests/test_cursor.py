@@ -134,6 +134,20 @@ class CursorBaseTests(tests.MySQLConnectorTests):
         except (SyntaxError, TypeError):
             self.fail("Cursor execute(): wrong arguments")
 
+    def test_context_manager(self):
+        """CursorBase object close()-method"""
+
+        def close(self):
+            self._test = "Close called"
+        self.cur.close = close.__get__(self.cur, cursor.MySQLCursor)
+
+        with self.cur as c:
+            self.check_method(c, 'execute')
+            self.assertEqual(None, self.cur._test)
+
+        self.assertEqual('Close called',
+                         self.cur._test)  # pylint: disable=E1103
+
     def test_executemany(self):
         """CursorBase object executemany()-method"""
         self.check_method(self.cur, 'executemany')

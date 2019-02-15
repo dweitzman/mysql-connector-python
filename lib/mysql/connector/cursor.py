@@ -169,6 +169,12 @@ class CursorBase(MySQLCursorAbstract):
         """
         pass
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self):
+        self.close()
+
     def close(self):
         """Close the cursor."""
         pass
